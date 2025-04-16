@@ -1,29 +1,27 @@
 import streamlit as st
 import pandas as pd
 import pytesseract
-from pdf2image import convert_from_bytes
+from PIL import Image
 from io import BytesIO
 from datetime import datetime
 import tempfile
 from lxml import etree
 
-st.title("Générateur de fichier de règlement à partir de factures")
+st.title("Générateur de fichier de règlement à partir de factures (images uniquement)")
 
 factures = []
 total_lignes = []
 
-uploaded_files = st.file_uploader("Importe tes factures (PDF ou image)", type=["pdf", "jpg", "jpeg", "png"], accept_multiple_files=True)
+uploaded_files = st.file_uploader(
+    "Importe tes factures (images uniquement)",
+    type=["jpg", "jpeg", "png"],
+    accept_multiple_files=True
+)
 
 if uploaded_files:
     for file in uploaded_files:
         st.subheader(f"Analyse de {file.name}")
-
-        if file.name.endswith(".pdf"):
-            images = convert_from_bytes(file.read())
-            image = images[0]
-        else:
-            image = file
-
+        image = Image.open(file)
         text = pytesseract.image_to_string(image)
 
         montant = ""
