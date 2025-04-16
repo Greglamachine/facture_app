@@ -21,7 +21,9 @@ uploaded_files = st.file_uploader(
 if uploaded_files:
     for file in uploaded_files:
         st.subheader(f"Analyse de {file.name}")
-        image = Image.open(file)
+        
+        # Ouvre l'image de manière compatible avec pytesseract
+        image = Image.open(file).convert("RGB")
         text = pytesseract.image_to_string(image)
 
         montant = ""
